@@ -12,8 +12,8 @@ class ListViewModel @Inject constructor(
     private val repository: CarRepository
 ) : ViewModel() {
 
-    private var sort = DEFAULT_SORT_QUERY
-    private var sortDirection = DEFAULT_SORT_DIRECTION_QUERY
+    var sort = DEFAULT_SORT_QUERY
+    var sortDirection = DEFAULT_SORT_DIRECTION_QUERY
     var minDate = DEFAULT_MIN_DATE
     var maxDate = DEFAULT_MAX_DATE
     var minYear = DEFAULT_MIN_YEAR

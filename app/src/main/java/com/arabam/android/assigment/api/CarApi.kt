@@ -14,7 +14,7 @@ interface CarApi {
         @Query("minDate") minDate: String,
         @Query("maxDate") maxDate: String,
         @Query("minYear") minYear: Int,
-        @Query("maxYEar") maxYear: Int,
+        @Query("maxYear") maxYear: Int,
         @Query("skip") skip: Int,
         @Query("take") take: Int
     ): List<Car>
