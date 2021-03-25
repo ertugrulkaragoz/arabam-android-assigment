@@ -6,6 +6,7 @@ import androidx.core.view.isVisible
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.arabam.android.assigment.R
 import com.arabam.android.assigment.databinding.CarLoadStateFooterBinding
 
 class CarLoadStateAdapter(private val retry: () -> Unit) :
@@ -38,6 +39,11 @@ class CarLoadStateAdapter(private val retry: () -> Unit) :
                 progressBar.isVisible = loadState is LoadState.Loading
                 buttonRetry.isVisible = loadState !is LoadState.Loading
                 textViewError.isVisible = loadState !is LoadState.Loading
+
+                if (loadState is LoadState.Error) {
+                    textViewError.text = loadState.error.localizedMessage
+                        ?: binding.root.context.getString(R.string.unknown_error_occurred)
+                }
             }
         }
     }

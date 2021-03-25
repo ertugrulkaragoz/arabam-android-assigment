@@ -62,21 +62,21 @@ class FilterAdvertsBottomSheetFragment : BottomSheetDialogFragment() {
 
         binding.apply {
 
-            if (viewModel.maxYear.toString().isEmpty() && viewModel.minYear.toString().isNotEmpty()) {
-                val tempText = "${viewModel.minYear} ${resources.getString(R.string.and_above)}"
+            if (viewModel.filter.maxYear.toString().isEmpty() && viewModel.filter.minYear.toString().isNotEmpty()) {
+                val tempText = "${viewModel.filter. minYear} ${resources.getString(R.string.and_above)}"
                 filterFragmentYearTextView.text = tempText
             }
-            if (viewModel.maxYear.toString().isNotEmpty() && viewModel.minYear.toString().isEmpty()) {
-                val tempText = "${viewModel.maxYear}  ${resources.getString(R.string.and_below)}"
+            if (viewModel.filter.maxYear.toString().isNotEmpty() && viewModel.filter.minYear.toString().isEmpty()) {
+                val tempText = "${viewModel.filter.maxYear}  ${resources.getString(R.string.and_below)}"
                 filterFragmentYearTextView.text = tempText
             }
-            if ((viewModel.maxYear.toString().isEmpty() && viewModel.minYear.toString().isEmpty())
-                || (viewModel.maxYear.toString() == DEFAULT_MAX_YEAR.toString() && viewModel.minYear.toString() == DEFAULT_MIN_YEAR.toString())) {
+            if ((viewModel.filter.maxYear.toString().isEmpty() && viewModel.filter.minYear.toString().isEmpty())
+                || (viewModel.filter.maxYear.toString() == DEFAULT_MAX_YEAR.toString() && viewModel.filter.minYear.toString() == DEFAULT_MIN_YEAR.toString())) {
                 filterFragmentYearTextView.text = resources.getString(R.string.filter_adverts_all)
             }
-            if ((viewModel.maxYear.toString().isNotEmpty() && viewModel.minYear.toString().isNotEmpty())
-                && (viewModel.maxYear.toString() != DEFAULT_MAX_YEAR.toString() && viewModel.minYear.toString() != DEFAULT_MIN_YEAR.toString())) {
-                val tempText = "${viewModel.minYear}-${viewModel.maxYear}"
+            if ((viewModel.filter.maxYear.toString().isNotEmpty() && viewModel.filter.minYear.toString().isNotEmpty())
+                && (viewModel.filter.maxYear.toString() != DEFAULT_MAX_YEAR.toString() && viewModel.filter.minYear.toString() != DEFAULT_MIN_YEAR.toString())) {
+                val tempText = "${viewModel.filter.minYear}-${viewModel.filter.maxYear}"
                 filterFragmentYearTextView.text = tempText
             }
 

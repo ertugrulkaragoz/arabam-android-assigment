@@ -1,4 +1,4 @@
-package com.arabam.android.assigment.api
+package com.arabam.android.assigment.data.remote
 
 import com.arabam.android.assigment.data.model.Car
 import com.arabam.android.assigment.data.model.CarDetail
@@ -21,7 +21,7 @@ interface CarApi {
 
     @GET("api/v1/detail")
     suspend fun getCarDetail(
-        @Query("id") id: Int
+        @Query("id") id: Long
     ): CarDetail
 
     companion object {

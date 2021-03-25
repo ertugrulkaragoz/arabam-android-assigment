@@ -1,7 +1,7 @@
 package com.arabam.android.assigment.data.model
 
 data class CarDetail(
-    val id: Int,
+    val id: Long,
     val title: String,
     val location: Location,
     val category: Category,

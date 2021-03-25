@@ -1,11 +1,8 @@
 package com.arabam.android.assigment.ui.detail
 
 import androidx.lifecycle.*
-import com.arabam.android.assigment.data.CarRepository
-import com.arabam.android.assigment.data.ResultWrapper
-import com.arabam.android.assigment.data.model.CarDetail
+import com.arabam.android.assigment.data.repository.CarRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -13,12 +10,13 @@ class DetailViewModel @Inject constructor(
     private val repository: CarRepository
 ) : ViewModel() {
 
-    private val _carDetail = MutableLiveData<ResultWrapper<CarDetail>>()
-    val carDetail: LiveData<ResultWrapper<CarDetail>> get() = _carDetail
+    var id = MutableLiveData<Long>()
 
-    fun getCarDetail(id: Int) {
-        viewModelScope.launch {
-            _carDetail.postValue(repository.getCarDetail(id))
-        }
+    var carDetail = id.switchMap {
+        repository.getCarDetail(it).asLiveData()
+    }
+
+    fun setId(id: Long) {
+        this.id.value = id
     }
 }

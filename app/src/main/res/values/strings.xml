@@ -46,5 +46,6 @@
     <string name="latest">The Latest</string>
     <string name="and_below">and below</string>
     <string name="and_above">and above</string>
-
+    <string name="unknown_error_occurred">An unknown error occurred</string>
+    <string name="could_not_load_search_results">Could not load search results: %s</string>
 </resources>

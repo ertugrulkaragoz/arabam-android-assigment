@@ -12,17 +12,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager.widget.ViewPager
 import com.arabam.android.assigment.R
-import com.arabam.android.assigment.api.CarApi.Companion.BASE_URL
-import com.arabam.android.assigment.data.ResultWrapper
-import com.arabam.android.assigment.data.model.CarDetail
+import com.arabam.android.assigment.data.remote.CarApi.Companion.BASE_URL
+import com.arabam.android.assigment.data.model.CarDetailEntity
 import com.arabam.android.assigment.databinding.FragmentDetailBinding
-import com.arabam.android.assigment.util.dismiss
-import com.arabam.android.assigment.util.show
+import com.arabam.android.assigment.util.*
 import com.google.android.material.button.MaterialButton
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -35,7 +33,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     private var _binding: FragmentDetailBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var carDetail: CarDetail
+    private lateinit var carDetailEntity: CarDetailEntity
     private lateinit var pageString: String
 
     private val advertPropertiesFragment = AdvertPropertiesFragment()
@@ -59,38 +57,40 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             actionbar.title = resources.getString(R.string.detail_fragment_toolbar)
             actionbar.setDisplayHomeAsUpEnabled(true)
         }
-
-        viewModel.getCarDetail(args.id)
-        viewModel.carDetail.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is ResultWrapper.Success -> {
-                    carDetail = it.value
-                    init()
-                }
-                is ResultWrapper.GenericError -> {
-                    Toast.makeText(
-                        requireContext(),
-                        it.error?.errors?.values?.first(),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-                is ResultWrapper.NetworkError -> {
-                    Toast.makeText(
-                        requireContext(),
-                        resources.getString(R.string.network_not_available),
-                        Toast.LENGTH_SHORT
-                    ).show()
+        viewModel.setId(args.id)
+            viewModel.carDetail.observe(viewLifecycleOwner) {
+                when(it) {
+                    is Resource.Success -> {
+                        carDetailEntity = it.data!!
+                        init()
+                    }
+                    is Resource.Loading -> {
+                        binding.apply {
+                            detailFragmentProgressBar.show()
+                            detailFragmentPageLayout.dismiss()
+                            detailFragmentScrollView.dismiss()
+                            detailFragmentTitle.dismiss()
+                            detailFragmentBottomLayout.dismiss()
+                        }
+                    }
+                    is Resource.Error -> {
+                        Toast.makeText(
+                            requireContext(),
+                            it.error.toString(),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             }
-        })
     }
 
     private fun init() {
-        val sliderAdapter = ImageSlideViewPagerAdapter(requireContext(), carDetail.photos)
+        val sliderAdapter =
+            carDetailEntity.photos?.let { ImageSlideViewPagerAdapter(requireContext(), it) }
 
-        advertPropertiesFragment.carDetail = carDetail
-        explanationFragment.advertExplanations = carDetail.text
-        userInfoFragment.userInfo = carDetail.userInfo
+        advertPropertiesFragment.carDetailEntity = carDetailEntity
+        explanationFragment.advertExplanations = carDetailEntity.text
+        userInfoFragment.userInfo = carDetailEntity.toUserInfo()
 
         replaceFragment(advertPropertiesFragment)
 
@@ -102,34 +102,34 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             detailFragmentBottomLayout.show()
 
             detailFragmentSlash.text = "/"
-            pageString = "1/${carDetail.photos.size}"
+            pageString = "1/${carDetailEntity.photos?.size}"
             sliderPageTextView.text = pageString
             detailFragmentImageViewPager.adapter = sliderAdapter
-            detailFragmentTitle.text = carDetail.title
-            detailFragmentUserName.text = carDetail.userInfo.nameSurname
-            detailFragmentCategory.text = carDetail.category.name
-            detailFragmentCityName.text = carDetail.location.cityName
-            detailFragmentTownName.text = carDetail.location.townName
+            detailFragmentTitle.text = carDetailEntity.title
+            detailFragmentUserName.text = carDetailEntity.nameSurname
+            detailFragmentCategory.text = carDetailEntity.categoryName
+            detailFragmentCityName.text = carDetailEntity.cityName
+            detailFragmentTownName.text = carDetailEntity.townName
 
             detailFragmentImageViewPager.addOnPageChangeListener(object :
                 ViewPager.SimpleOnPageChangeListener() {
                 override fun onPageSelected(position: Int) {
-                    pageString = "${position + 1}/${carDetail.photos.size}"
+                    pageString = "${position + 1}/${carDetailEntity.photos?.size}"
                     sliderPageTextView.text = pageString
                 }
             })
 
             detailFragmentCallUserButton.setOnClickListener {
                 val dialIntent = Intent(Intent.ACTION_DIAL)
-                dialIntent.data = Uri.parse("tel:${carDetail.userInfo.phoneFormatted}")
+                dialIntent.data = Uri.parse("tel:${carDetailEntity.phoneFormatted}")
                 startActivity(dialIntent)
             }
 
             detailFragmentWpIcon.setOnClickListener {
                 val url =
-                    "https://api.whatsapp.com/send?phone=${carDetail.userInfo.phone}&text=${resources.getString(
+                    "https://api.whatsapp.com/send?phone=${carDetailEntity.phone}&text=${resources.getString(
                         R.string.wp_text
-                    )}\n${BASE_URL}api/v1/detail?id=${carDetail.id}"
+                    )}\n${BASE_URL}api/v1/detail?id=${carDetailEntity.carId}"
                 val intent = Intent(Intent.ACTION_VIEW)
                 intent.data = Uri.parse(url)
                 if (isWhatsAppInstalled()) {

@@ -35,6 +35,8 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+        freeCompilerArgs += "-Xopt-in=androidx.paging.ExperimentalPagingApi"
+        freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
     }
 }
 
@@ -64,6 +66,10 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:4.11.0"
 
     implementation 'com.github.stfalcon:stfalcon-imageviewer:1.0.1'
+
+    implementation "androidx.room:room-runtime:2.3.0-beta02"
+    kapt "androidx.room:room-compiler:2.3.0-beta02"
+    implementation "androidx.room:room-ktx:2.3.0-beta02"
 }
 
 kapt {

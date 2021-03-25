@@ -2,56 +2,50 @@ package com.arabam.android.assigment.ui.list
 
 import androidx.lifecycle.*
 import androidx.paging.*
-import com.arabam.android.assigment.data.CarPagingSource
-import com.arabam.android.assigment.data.CarRepository
+import com.arabam.android.assigment.data.repository.CarRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import androidx.lifecycle.viewModelScope
+import com.arabam.android.assigment.data.model.Filter
+import com.arabam.android.assigment.data.model.Sort
 
 @HiltViewModel
 class ListViewModel @Inject constructor(
-    private val repository: CarRepository
+    repository: CarRepository
 ) : ViewModel() {
 
-    var sort = DEFAULT_SORT_QUERY
-    var sortDirection = DEFAULT_SORT_DIRECTION_QUERY
-    var minDate = DEFAULT_MIN_DATE
-    var maxDate = DEFAULT_MAX_DATE
-    var minYear = DEFAULT_MIN_YEAR
-    var maxYear = DEFAULT_MAX_YEAR
+    var sort = Sort(DEFAULT_SORT_QUERY, DEFAULT_SORT_DIRECTION_QUERY)
+    var filter = Filter(DEFAULT_MIN_DATE, DEFAULT_MAX_DATE, DEFAULT_MIN_YEAR, DEFAULT_MAX_YEAR)
 
-    private val pagingConfig = PagingConfig(
-        pageSize = 10,
-        maxSize = 100,
-        initialLoadSize = 10,
-        enablePlaceholders = false
-    )
+    private var refreshOnInit = false
+    var newQueryInProgress = false
 
     fun setSortQueries(sortQuery: Int, sortDirectionQuery: Int) {
-        sort = sortQuery
-        sortDirection = sortDirectionQuery
+        sort.sort = sortQuery
+        sort.sortDirection = sortDirectionQuery
+        refreshOnInit = true
+        newQueryInProgress = true
     }
 
     fun setFilterDateQueries(minDateQuery: String, maxDateQuery: String) {
-        minDate = minDateQuery
-        maxDate = maxDateQuery
+        filter.minDate = minDateQuery
+        filter.maxDate = maxDateQuery
+        refreshOnInit = true
+        newQueryInProgress = true
     }
 
     fun setYearQueries(minYearQuery: Int, maxYearQuery: Int) {
-        minYear = minYearQuery
-        maxYear = maxYearQuery
+        filter.minYear = minYearQuery
+        filter.maxYear = maxYearQuery
+        refreshOnInit = true
+        newQueryInProgress = true
     }
 
-    val cars = Pager(pagingConfig) {
-        CarPagingSource(
-            repository,
-            sort,
-            sortDirection,
-            minDate,
-            maxDate,
-            minYear,
-            maxYear
-        )
-    }.liveData.cachedIn(viewModelScope)
+    val cars = repository.getCars(
+        sort,
+        filter,
+        refreshOnInit
+    ).liveData.cachedIn(viewModelScope)
 
     companion object {
         const val DEFAULT_SORT_QUERY = 1

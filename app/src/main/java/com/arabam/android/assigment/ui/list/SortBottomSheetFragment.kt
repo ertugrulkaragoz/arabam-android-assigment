@@ -4,14 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
 import com.arabam.android.assigment.R
 import com.arabam.android.assigment.data.model.Sort
 import com.arabam.android.assigment.databinding.FragmentSortBottomSheetBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 class SortBottomSheetFragment : BottomSheetDialogFragment() {
 
     private var _binding: FragmentSortBottomSheetBinding? = null

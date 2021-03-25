@@ -42,7 +42,6 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/detail_fragment_car_image_layout">
 
-
         <TextView
             android:id="@+id/car_title_text_view"
             android:layout_width="wrap_content"
@@ -109,8 +108,5 @@
                 android:textSize="11sp"
                 tool:text="100000" />
         </RelativeLayout>
-
-
     </RelativeLayout>
-
 </RelativeLayout>

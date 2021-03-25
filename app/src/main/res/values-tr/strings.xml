@@ -46,4 +46,6 @@
     <string name="latest">En Yeni</string>
     <string name="and_below">ve altı</string>
     <string name="and_above">ve üstü</string>
+    <string name="unknown_error_occurred">An unknown error occurred</string>
+    <string name="could_not_load_search_results">Could not load search results: %s</string>
 </resources>

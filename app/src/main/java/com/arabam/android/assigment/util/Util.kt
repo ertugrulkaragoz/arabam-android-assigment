@@ -6,6 +6,7 @@ import android.os.Looper
 import android.view.View
 import android.widget.ImageView
 import com.arabam.android.assigment.R
+import com.arabam.android.assigment.data.model.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -52,8 +53,51 @@ fun ImageView.downloadImage(
         .into(this)
 }
 
+fun Car.toEntity(): CarEntity {
+    return CarEntity(
+        id,
+        title,
+        location.cityName,
+        location.townName,
+        category.id,
+        category.name,
+        priceFormatted,
+        photo
+    )
+}
+
+fun CarDetail.toEntity(): CarDetailEntity {
+    return CarDetailEntity(
+        id,
+        title,
+        location.cityName,
+        location.townName,
+        category.id,
+        category.name,
+        modelName,
+        priceFormatted,
+        dateFormatted,
+        photos,
+        properties,
+        text,
+        userInfo.id,
+        userInfo.nameSurname,
+        userInfo.phoneFormatted,
+        userInfo.phone,
+        System.currentTimeMillis()
+    )
+}
+
+fun CarDetailEntity.toUserInfo(): UserInfo {
+    return UserInfo(userId,nameSurname,phoneFormatted,phone)
+}
+
 fun View.show() {
     this.visibility = View.VISIBLE
+}
+
+fun View.invisible() {
+    this.visibility = View.INVISIBLE
 }
 
 fun View.dismiss() {
