@@ -24,12 +24,14 @@ An [Android Assignment](https://github.com/arabamcom/android-assignment) for the
 - Paging used for implementing pagination.
 - Glide used for handling image fetch.
 - Stfalcon imageviewer used for the full screen photos.
+- Room used for offline caching.
 
 ## Tech Stack
 - Android Architecture Components
 - ViewModel
 - Paging
 - LiveData
+- Room
 - Coroutines
 - ViewBinding
 - Dagger Hilt
